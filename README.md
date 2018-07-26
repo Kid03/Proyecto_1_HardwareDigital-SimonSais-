@@ -1,4 +1,4 @@
-# Proyecto_1_HardwareDigital-SimonSais-
+# Proyecto_1_HardwareDigital-SimonSays-
 Incorporar a un proyecto de base, hardware y software para ampliar su funcionalidad.
 
 .-------------- Funciones --------------.
@@ -9,3 +9,9 @@ buttonCheck(): Entrega un entero, indicando que botón fue presionado(0;1;2;3). 
 
 allLeDoff(): Como indica el su nombre apaga las luces led con los que el jugador interactúa.
 
+flashLED():Enciende el LED entregado, y ejecuta el sonido predeterminado para ese  LED.
+
+winSequence():Indica al jugador que ganó, encendiendo todos los LEDs y ejecutando una canción de victoria, luego verifica que ningún botón esté presionado, para que al presionarlo se incie una partida.
+
+startSequence():Asegurandoce que el numero random es realmente random. Guarda en la lista "buttonSequence" la secuencia que tendra que memorizas el usuario.
+        Luego de crear la secuencia aleatoria, enciende 4 veces las luces indicando que comenzo el juego.
