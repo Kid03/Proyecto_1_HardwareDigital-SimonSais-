@@ -1,74 +1,75 @@
-int button[] = {2,4,6,8}; //red is button[0], green is button[1], blue is button[2], yellow is button[3]
-int led[] = {3,5,7,9}; //red is led[0], green is led[1], blue is led[2], yellow is led[3]
-int tones[] = {262, 330, 392, 494}; //tones to play with each button (c, e, g, b)
-int roundsToWin = 10; //number of rounds the player has to play before they win the game (the array can only hold up to 16 rounds)
-int buttonSequence[16]; //make an array of numbers that will be the sequence that the player needs to remember
-int buzzerPin = 10; //pin that the buzzer is connected to
-int pressedButton = 4; //a variable to remember which button is being pressed. 4 is the value if no button is being pressed.
-int roundCounter = 1; //keeps track of what round the player is on
-long startTime = 0; //timer variable for time limit on button press
-long timeLimit = 2000; //time limit to hit a button
-boolean gameStarted = false; //variable to tell the game whether or not to play the start sequence
+int button[] = {2,4,6,8}; //rojo es button[0], verde es button[1], azul es button[2], amarillo es button[3]
+int led[] = {3,5,7,9}; //rojo es led[0], verde es led[1], azul es led[2], amarillo es led[3]
+int tones[] = {262, 330, 392, 494}; //tonos para tocar segun el boton apretado(c, e, g, b)
+int roundsToWin = 10; //numero de rondas para ganar(soporta un maximo de 16 rondas)
+int buttonSequence[16]; // listado de colores que el usuario debera memorizar para ganar 
+int buzzerPin = 10; //pin donde el buzzer esta conectado
+int pressedButton = 4; //variable que recuerda el boton pulsado, si es 4 significa que ningun boton.
+int roundCounter = 1; //contador de rondas.
+long startTime = 0; // variable de tiempo limite para precionar un botton
+long timeLimit = 2000; //tiempo limite para precionar un boton
+boolean gameStarted = false; //variable que guarda el estado del juego.
 
 void setup(){
-  //set all of the button pins to input_pullup (use the builtin pullup resistors)
+  //se declaran los pines para los botones como input_pullup. 
   pinMode(button[0], INPUT_PULLUP);
   pinMode(button[1], INPUT_PULLUP);
   pinMode(button[2], INPUT_PULLUP);
   pinMode(button[3], INPUT_PULLUP);
-  //set all of the LED pins to output
+  //se declaran los pines de los leds y buzzer como OUTPUT
   pinMode(led[0], OUTPUT);
   pinMode(led[1], OUTPUT);
   pinMode(led[2], OUTPUT);
   pinMode(led[3], OUTPUT);
-  pinMode(buzzerPin, OUTPUT); //set the buzzer pin to output
+  pinMode(11, OUTPUT);//Establece en nuevo led para informar los rounds ganados
+  pinMode(buzzerPin, OUTPUT); //Establecer el buzzer para salida
 }
 void loop(){
-  if (gameStarted == false){ //if the game hasn't started yet
-    startSequence(); //flash the start sequence
-    roundCounter = 0; //reset the round counter
-    delay(1500); //wait a second and a half
-    gameStarted = true; //set gameStarted to true so that this sequence doesn't start again
+  if (gameStarted == false){ //Si el juego aún no ha comenzado .
+    startSequence(); //flash de comienzo de juego.
+    roundCounter = 0;//reinicia el contador a 0.
+    delay(1500);
+    gameStarted = true; //Cambiamos el estado del juego a true.
   }
-  //each round, start by flashing out the sequence to be repeated
-  for(int i=0; i <= roundCounter; i++){ //go through the array up to the current round number
-    flashLED(buttonSequence[i]); //turn on the LED for that array position and play the sound
-    delay(200); //wait
-    allLEDoff(); //turn all of the LEDs off
+  //Cada ronda, comienza mostrando la secuencia que se repetirá.
+  for(int i=0; i <= roundCounter; i++){ // Va atraves del arreglo, hasta el número de rondas actual.
+    flashLED(buttonSequence[i]); //Se enciende el LED en la posición pedida, reproduciendo el sonido.
+    delay(200); /Espera
+    allLEDoff(); //Apaga todo los LEDs
     delay(200);
   }
-  //then start going through the sequence one at a time and see if the user presses the correct button
-  for(int i=0; i <= roundCounter; i++){ //for each button to be pressed in the sequence
-    startTime = millis(); //record the start time
-    while(true){ //loop until the player presses a button or the time limit is up (the time limit check is in an if statement)
-      pressedButton = buttonCheck(); //every loop check to see which button is pressed
-      if (pressedButton < 4){ //if a button is pressed... (4 means that no button is pressed)
-        flashLED(pressedButton); //flash the LED for the button that was pressed
-        if(pressedButton == buttonSequence[i]){ //if the button matches the button in the sequence
-          delay(250); //leave the LED light on for a moment
-          allLEDoff(); //then turn off all of the lights and
-          break; //end the while loop (this will go to the next number in the for loop)
+  //Comiensa a recorrer la secuencia de a uno por vez y ve si el usuario presiona el botón correcto.
+  for(int i=0; i <= roundCounter; i++){ //Para cada botón a presionar en la secuencia.
+    startTime = millis(); //Registra la hora de inicio.
+    while(true){ //Se crea un bucle hasta que el jugador presiona un botón o el límite de tiempo se acaba. (la verificación de límite de tiempo está en una declaración if)
+      pressedButton = buttonCheck(); //Se guarda cada ves que se presiona un botón botón.
+      if (pressedButton < 4){ //Se verifica si se presionó el botón indicado con un número entero.("4" si no se presionó ningún botón).
+        flashLED(pressedButton); //parpadea el LED del botón que se presionó
+        if(pressedButton == buttonSequence[i]){ //Pregunta si el botón coincide con la secuencia.
+          delay(250); //Deja la luz LED encendida por un momento.
+          allLEDoff(); //Deja la luz LED encendida por un momento.
+          break; //Finaliza el ciclo while (esto irá al siguiente número en el ciclo for).
         }
-        else{ //if the button doesn't match the button in the sequence
-          loseSequence(); //play the lose sequence (the loose sequence stops the program)
-          break; //when the program gets back from the lose sequence, break the while loop so that the game can start over
+        else{ //Si no coincide con el botón de la secuencia
+          loseSequence(); //Es hora de que la función loseSequence funcione (descrita en el informe). 
+          break; //Cuando el programa regrese de la secuencia de pérdida, rompa el ciclo while para que el juego pueda comenzar de nuevo.
         }
-      } 
-      else { //if no button is pressed
-        allLEDoff(); //turn all the LEDs off
       }
-      //check to see if the time limit is up
-      if(millis() - startTime > timeLimit){ //if the time limit is up
-        loseSequence(); //play the lose sequence
-        break; //when the program gets back from the lose sequence, break the while loop so that the game can start over
+      else { //Si no se presiona ningún botón
+        allLEDoff(); //Apaga todos los LEDs
+      }
+      //Verifique si el límite de tiempo está activo.
+      if(millis() - startTime > timeLimit){ //Si el está sobre el tiempo limite.
+        loseSequence(); //Funciona loseSequence();
+        break; //Cuando el programa regrese de la secuencia de pérdida, rompa el ciclo while para que el juego pueda comenzar de nuevo.
       }
     }
   }
-  roundCounter = roundCounter + 1; //increase the round number by 1
-  if (roundCounter >= roundsToWin){ //if the player has gotten to the 16th round
-    winSequence(); //play the winning song
+  roundCounter = roundCounter + 1; //Aumentar el número de ronda en 1.
+  if (roundCounter >= roundsToWin){ //Si el jugador llega a la ronda 16.
+    winSequence(); //Toca la canción ganadora.
   }
-  delay(500); //wait for half a second between rounds
+  delay(500); //Espera medio segundo entre ronda.
 }
 //----------FUNCTIONS------------
 //FLASH LED
@@ -79,17 +80,17 @@ void flashLED (int ledNumber){
 
 //TURN ALL LEDS OFF
 void allLEDoff (){
-  //turn all the LEDs off
+  //apaga todos los LED
   digitalWrite(led[0],LOW);
   digitalWrite(led[1],LOW);
   digitalWrite(led[2],LOW);
   digitalWrite(led[3],LOW);
-  //turn the buzzer off
+  //Apaga el buzzer.
   noTone(buzzerPin);
 }
-//CHECK WHICH BUTTON IS PRESSED
+//COMPRUEBA CUANDO SE PRESIONA EL BOTÓN
 int buttonCheck(){
-  //check if any buttons are being pressed
+  //Comprueba si se presionan algunos botones.
   if(digitalRead(button[0]) == LOW){
     return 0;
   }
@@ -100,40 +101,40 @@ int buttonCheck(){
   }else if(digitalRead(button[3]) == LOW){
     return 3;
   }else{
-    return 4; //this will be the value for no button being pressed
+    return 4; //Este será el valor que significará que no se a presionado ningún botón.
   }
 }
 //START SEQUENCE
 void startSequence(){
-  randomSeed(analogRead(A0)); //make sure the random numbers are really random
-  //populate the buttonSequence array with random numbers from 0 to 3
+  randomSeed(analogRead(A0)); //Se asegura que todos los números sean aleatorios.
+  //Llena el arreglo de numeros aleatorios entre 0 y 3.
   for (int i=0;i<=roundsToWin;i++){
     buttonSequence[i] = round(random(0,4));
   }
-  //flash all of the LEDs when the game starts
+  //Parpadea todos los LED cuando comience el juego.
   for(int i=0; i<=3; i++){
-    tone(buzzerPin, tones[i], 200); //play one of the 4 tones
+    tone(buzzerPin, tones[i], 200); //Toca 1 de los 4 tonos.
     //turn all of the leds on
     digitalWrite(led[0],HIGH);
     digitalWrite(led[1],HIGH);
     digitalWrite(led[2],HIGH);
     digitalWrite(led[3],HIGH);
-    delay(100); //wait for a moment
-    //turn all of the leds off
+    delay(100); //Espera un momento.
+    //Apaga todos los LEDs
     digitalWrite(led[0],LOW);
     digitalWrite(led[1],LOW);
     digitalWrite(led[2],LOW);
     digitalWrite(led[3],LOW);
-    delay(100); //wait for a moment
-  } //this will repeat 4 times
+    delay(100); //Espera un momento.
+  } //Esto se repetira 4 veces
 }
 //WIN SEQUENCE
 void winSequence(){
-  //turn all the LEDs on
+  //Enciende todos los LEDs.
   for(int j=0; j<=3; j++){
     digitalWrite(led[j], HIGH);
   }
-  //play the 1Up noise
+  //Toca la primera melodia.
   tone(buzzerPin, 1318, 150); //E6
   delay(175);
   tone(buzzerPin, 1567, 150); //G6
@@ -146,20 +147,21 @@ void winSequence(){
   delay(175);
   tone(buzzerPin, 3135, 500); //G7
   delay(500);
-  //wait until a button is pressed
+  //Espera hasta que se presione el botón.
   do {
     pressedButton = buttonCheck();
   } while(pressedButton > 3);
   delay(100);
-  gameStarted = false; //reset the game so that the start sequence will play again.
+  gameStarted = false; //Reinicia el juego para que la secuencia de inicio se reproduzca nuevamente.
 }
 //LOSE SEQUENCE
 void loseSequence(){
-  //turn all the LEDs on
+  //Enciende todos los LEDs.
   for(int j=0; j<=3; j++){
     digitalWrite(led[j], HIGH);
   }
-  //play the 1Up noise
+  //Toca la melodia.
+ 
   tone(buzzerPin, 130, 250); //E6
   delay(275);
   tone(buzzerPin, 73, 250); //G6
@@ -168,10 +170,23 @@ void loseSequence(){
   delay(175);
   tone(buzzerPin, 98, 500); //C7
   delay(500);
-  //wait until a button is pressed
+  aux();
+   noTone(buzzerPin);
+  //Espera hasta que se presione el botón.
   do {
     pressedButton = buttonCheck();
-  } while(pressedButton > 3);
+  } while(pressedButton > 3 );
   delay(200);
-  gameStarted = false; //reset the game so that the start sequence will play again.
+  gameStarted = false; //Reinicia el juego para que la secuencia de inicio se reproduzca nuevamente.
 }
+//Enciende el LED extra para informar al jugar de cuantas rondas logro ganar.
+void aux(){
+  delay(200);
+  for(int i=0; i<roundCounter; i++){//Iteracion hecha en base a roundCounter
+    digitalWrite(11, HIGH);
+    tone(buzzerPin, 65, 150);
+    delay(400);
+    digitalWrite(11, LOW);
+    delay(200);
+    }
+  }
