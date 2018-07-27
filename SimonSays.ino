@@ -21,7 +21,7 @@ void setup(){
   pinMode(led[1], OUTPUT);
   pinMode(led[2], OUTPUT);
   pinMode(led[3], OUTPUT);
-  pinMode(11, OUTPUT);
+  pinMode(11, OUTPUT);//Establece en nuevo led para informar los rounds ganados
   pinMode(buzzerPin, OUTPUT); //Establecer el buzzer para salida
 }
 void loop(){
@@ -179,9 +179,10 @@ void loseSequence(){
   delay(200);
   gameStarted = false; //Reinicia el juego para que la secuencia de inicio se reproduzca nuevamente.
 }
-
+//Enciende el LED extra para informar al jugar de cuantas rondas logro ganar.
 void aux(){
-  for(int i=0; i<roundCounter; i++){
+  delay(200);
+  for(int i=0; i<roundCounter; i++){//Iteracion hecha en base a roundCounter
     digitalWrite(11, HIGH);
     tone(buzzerPin, 65, 150);
     delay(400);
