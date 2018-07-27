@@ -15,3 +15,7 @@ winSequence():Indica al jugador que ganó, encendiendo todos los LEDs y ejecutan
 
 startSequence():Asegurandoce que el numero random es realmente random. Guarda en la lista "buttonSequence" la secuencia que tendra que memorizas el usuario.
         Luego de crear la secuencia aleatoria, enciende 4 veces las luces indicando que comenzo el juego.
+
+loop(): Se verifica si el juego aún no se ha comenzado. Se reinician el contador de Round, y comienza el juego. Cada ronda muestra la secuencia que el jugador debe imitar paulatinamente. Se verifica si el jugador sigue la secuencia; Si presionó un botón errado se ejecuta loseSequence() ; Si no se presionó ningún botón se verifica si el jugador pasó sobre el tiempo de respuesta, Si es así, se ejecuta loseSequence() ; En el caso de llegar a 16 Round ganadas, se dá por finalizado ejecutando winSequence().
+
+setup():Declaración de pines y sus modos.
